@@ -42,11 +42,9 @@
  *  @return 符合条件的表情符名称
  */
 -(NSString *)faceKeyForValue:(NSString * )value face:(NSDictionary * )face{
-    NSLog(@"%s---value = ",__FUNCTION__);
     NSArray * allKeys = [face allKeys];
     for (NSString * key in allKeys){
         if ([value isEqualToString:[face objectForKey:key]]) {
-            NSLog(@"face = = %@",key);
             return key;
         }
     }
@@ -62,14 +60,13 @@
  *  @return 每一行的字符数量
  */
 -(int)getIndex:(NSString * )resourceString withWidth:(float)width{
-    NSLog(@"%s----%@",__FUNCTION__,resourceString);
     NSMutableDictionary * attr = [[NSMutableDictionary alloc]init];
     [attr setObject:self.font forKey:NSFontAttributeName];
     int length = [resourceString length];
     for (int i = 0 ; i < length; i++) {
         NSString * subStr = [resourceString substringToIndex:i];
-//        CGSize size = [subStr sizeWithAttributes:attr];
-        CGSize size = [subStr sizeWithFont:self.font];
+        CGSize size = [subStr sizeWithAttributes:attr];//7.0
+//        CGSize size = [subStr sizeWithFont:self.font];//6.0
 
         if (size.width > width) {
             return i - 1;
@@ -84,20 +81,19 @@
  *  @param string 需要处理的字符串
  */
 -(void)drawWithString:(NSString * )string{
-    NSLog(@"%s----%@",__FUNCTION__,string);
     if (xIndex + kSPACE_WIDTH + 5 > maxWidth) {
         xIndex = 0.0f;
         yIndex += kLINE_HEIGHT;
     }
     NSMutableDictionary * attr = [[NSMutableDictionary alloc]init];
     [attr setObject:self.font forKey:NSFontAttributeName];
-//    CGSize size = [string sizeWithAttributes:attr];
-    CGSize size = [string sizeWithFont:self.font];
+    CGSize size = [string sizeWithAttributes:attr];//7.0
+//    CGSize size = [string sizeWithFont:self.font];//6.0
     while (size.width > (maxWidth - xIndex)) {
         int index = [self getIndex:string withWidth:maxWidth - xIndex];
         NSString * subString  = [string substringToIndex:index];
-//        CGSize subSize = [subString sizeWithAttributes:attr];
-        CGSize subSize = [subString sizeWithFont:self.font];
+        CGSize subSize = [subString sizeWithAttributes:attr];
+//        CGSize subSize = [subString sizeWithFont:self.font];//6.0
 
         UILabel * label = [[UILabel alloc]initWithFrame:CGRectMake(xIndex, yIndex, subSize.width, subSize.height)];
         label.text = subString;
@@ -109,8 +105,8 @@
         line++ ;
         yIndex += kLINE_HEIGHT;
         string = [string substringFromIndex:index];
-//        size  = [string sizeWithAttributes:attr];
-        size  = [string  sizeWithFont:self.font];
+        size  = [string sizeWithAttributes:attr];
+//        size  = [string  sizeWithFont:self.font];//6.0
 
     }
     UILabel * label = [[UILabel alloc]initWithFrame:CGRectMake(xIndex, yIndex, size.width, size.height)];
@@ -127,7 +123,6 @@
  *  @param string 有可能是表情名称的字符串；
  */
 -(void)doFace:(NSString * )string{
-    NSLog(@"%s----%@",__FUNCTION__,string);
     NSString * faceStr = [self faceKeyForValue:string face:[self getFace]];
     if (faceStr == nil) {
         [self drawWithString:string];
@@ -135,7 +130,6 @@
     }
     NSMutableString * faceName= [NSMutableString stringWithString:faceStr];
     [faceName appendString:@".png"];
-    NSLog(@"表情 = %@",faceName);
     UIImageView * imageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:faceName]];
     if (xIndex + kICON_SIZE + kSPACE_WIDTH >= maxWidth) {
         xIndex = 0.0f;
@@ -149,7 +143,6 @@
 #pragma mark--接口实现
 -(void)setFaceAndText:(NSString *)string;
 {
-    NSLog(@"%s----%@",__FUNCTION__,string);
     FaceMatch * faceMatch = [[FaceMatch alloc]init];
     NSArray * faceArray = [faceMatch match:string];
     line = 1;

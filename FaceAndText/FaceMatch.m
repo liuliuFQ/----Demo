@@ -24,19 +24,16 @@
     return self;
 }
 /**
- *  <#Description#>
+ *  图片字符串的处理
  *
- *  @param resourceString <#resourceString description#>
+ *  @param resourceString 表情字符串
  */
 -(void)doMatch:(NSString *)resourceString{
-     NSLog(@"%s----%@",__FUNCTION__,resourceString);
     if ([resourceString length] == 0) {
-        NSLog(@"fanhui");
         return;
     }
     NSRange endRang = [resourceString rangeOfString:kEND_MARK];
     if (endRang.location == NSNotFound) {
-            NSLog(@"location = %d,",endRang.location);
 
             [_faceArray addObject:resourceString];
             return;
@@ -48,13 +45,11 @@
             }else{
                 NSRange beginRang = [string rangeOfString:kBEGIN_MARK options:NSBackwardsSearch];//从结尾开始查找
                 if (beginRang.location == NSNotFound) {
-                    NSLog(@"begin.location = %d,resourceString = %@",beginRang.location,resourceString);
                     [_faceArray addObject:resourceString];
                     return;
                 }else{
                     string = [string substringToIndex:beginRang.location];
                     if ([string length] > 0 ) {
-                        NSLog(@"string = %@",string);
 
                         [_faceArray addObject:string];
                     }
@@ -70,7 +65,7 @@
 }
 #pragma mark--接口实现
 -(NSArray * )match:(NSString * )resourceString;
-{    NSLog(@"%s----%@",__FUNCTION__,resourceString);
+{   
     [self doMatch:resourceString];
     return _faceArray;
 }
