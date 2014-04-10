@@ -65,7 +65,7 @@
 }
 #pragma mark--接口实现
 -(NSArray * )match:(NSString * )resourceString;
-{   
+{
     [self doMatch:resourceString];
     return _faceArray;
 }
